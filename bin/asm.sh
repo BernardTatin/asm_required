@@ -60,7 +60,6 @@ echo "output  : $output"
 nasm -g -l ${entrysrc}.lst -f  elf64 ${sources} || onerror 2 "nasm failed"
 
 ld -o ${output} ${objects} || onerror 3 "ld failed"
-# gcc -fPIE -o ${output} ${objects} || onerror 3 "ld failed"
 # gcc -m64 -fno-pie -no-pie -o ${output} ${objects} || onerror 3 "ld failed"
 [ ${dorun} -eq 1 ] && ./${output}
 

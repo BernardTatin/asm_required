@@ -1,8 +1,10 @@
 ; ----------------------------------------------------------------------
-; Writes "Hello, World" to the console using only system calls. Runs on 64-bit Linux only.
+; acat.asm
+;
+; A simple cat which write on STDOUT all what it reads on STDIN
 ; To assemble and run:
 ;
-;     nasm -felf64 hello.asm && ld hello.o && ./a.out
+;     nasm -felf64 acat.asm && ld hello.o && ./a.out
 ; ----------------------------------------------------------------------
 
 %include "syscalls.inc.asm"
@@ -11,19 +13,38 @@
 
 ; ----------------------------------------------------------------------
 section   .text
-          global    _start
+	global   _start					; entry point
 
 _start:
 loop:
-	sys_read  STDIN, rchar, dataSize
+	sys_read  STDIN, rchar, dataSize	; read dataSize chars from STDIN
+	cmp rax, 0							; rax contains the number of bytes
+	jz end_loop							; rax <= 0, end of file or error
+	jb cant_read
+	sys_write STDOUT, rchar, rax		; write the buffer
 	cmp rax, 0
-	jna end_loop
-	;; jb end_loop
-	sys_write STDOUT, rchar, rax
-	jmp loop
+	jb cant_write
+	jmp loop							; loop
+cant_write:
+	push rax
+	sys_write STDERR, writeerror, Ewriteerror-writeerror
+	pop rax
+	jmp end_loop
+cant_read:
+	push rax
+	sys_write STDERR, readerror, Ereaderror-readerror
+	pop rax
+	jmp end_loop
 end_loop:
-	sys_exit	rax
+	sys_exit	rax						; exit with last exit code
 
 ; ----------------------------------------------------------------------
-section   .bss
-rchar:   resb      dataSize
+section	.data
+readerror	db 'Cannot read STDIN', 10
+Ereaderror	db 0
+
+writeerror	db 'Cannot write STDIN', 10
+Ewriteerror db 0
+; ----------------------------------------------------------------------
+section .bss
+rchar:  resb      dataSize				; the buffer
