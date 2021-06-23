@@ -16,6 +16,8 @@ ${script} [OPTIONS] file ...
 OPTIONS:
 	-o file|--output file: name of output file
 	-r|--run: run aftetr linking
+	-p|--project: project name, i.e. entry point, output name
+	--ld|--gcc: use ld or gcc for linking
 DOHELP
 	exit 0
 }
@@ -28,6 +30,7 @@ entrysrc=
 objects=
 output=a.out
 dorun=0
+link=WITH_LD
 
 # decrypt parameters
 while [ $# -ne 0 ]
@@ -37,12 +40,28 @@ do
 			dohelp
 			;;
 		-o|--output)
+			$p=$1
 			shift
-			[ $# -eq 0 ] && onerror 1 "parameter $1 needs a file name"
+			[ $# -eq 0 ] && onerror 1 "parameter $p needs a file name"
 			output=$1
+			;;
+		-p|--project)
+			$p=$1
+			shift
+			[ $# -eq 0 ] && onerror 1 "parameter $p needs a name"
+			output=$1
+			entrysrc=$1
+			sources="$sources $1.asm"
+			objects="${objects} ${entrysrc}.o"
 			;;
 		-r|--run)
 			dorun=1
+			;;
+		--ld)
+			link=WITH_LD
+			;;
+		--gcc)
+			link=WITH_GCC
 			;;
 		*)
 			sources="$sources $1"
@@ -57,10 +76,20 @@ echo "sources : $sources"
 echo "objects : $objects"
 echo "output  : $output"
 
-nasm -g -l ${entrysrc}.lst -f  elf64 ${sources} || onerror 2 "nasm failed"
+nasm -D${link} -f  elf64 -g \
+	-l ${entrysrc}.lst ${sources} \
+	|| onerror 2 "nasm failed"
 
-ld -o ${output} ${objects} || onerror 3 "ld failed"
-# gcc -m64 -fno-pie -no-pie -o ${output} ${objects} || onerror 3 "ld failed"
+if [ ${link} = 'WITH_LD' ]
+then
+	ld -o ${output} ${objects} \
+		|| onerror 3 "ld failed"
+fi
+if [ ${link} = 'WITH_GCC' ]
+then
+	gcc -m64 -fno-pie -no-pie -o ${output} ${objects}  \
+		|| onerror 3 "ld failed"
+fi
 [ ${dorun} -eq 1 ] && ./${output}
 
 exit 0
