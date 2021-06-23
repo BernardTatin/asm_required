@@ -8,6 +8,7 @@
 ; ----------------------------------------------------------------------
 
 %include "syscalls.inc.asm"
+%include "start.inc.asm"
 
 ; ----------------------------------------------------------------------
 %macro push_main_regs 0
@@ -43,17 +44,7 @@
 %endmacro
 
 ; ----------------------------------------------------------------------
-section 	.text
-%ifdef WITH_LD
-	global _start
-
-_start:
-%endif
-%ifdef WITH_GCC
-	global main
-
-main:
-%endif
+ENTRY_POINT
 	sys_write 	STDOUT, title, Etitle-title
 	mov 		eax, 01h
 	cpuid

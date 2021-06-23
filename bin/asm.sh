@@ -40,13 +40,13 @@ do
 			dohelp
 			;;
 		-o|--output)
-			$p=$1
+			p=$1
 			shift
 			[ $# -eq 0 ] && onerror 1 "parameter $p needs a file name"
 			output=$1
 			;;
 		-p|--project)
-			$p=$1
+			p=$1
 			shift
 			[ $# -eq 0 ] && onerror 1 "parameter $p needs a name"
 			output=$1
@@ -77,6 +77,7 @@ echo "objects : $objects"
 echo "output  : $output"
 
 nasm -D${link} -f  elf64 -g \
+	-Iinclude \
 	-l ${entrysrc}.lst ${sources} \
 	|| onerror 2 "nasm failed"
 

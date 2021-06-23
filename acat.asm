@@ -8,21 +8,12 @@
 ; ----------------------------------------------------------------------
 
 %include "syscalls.inc.asm"
+%include "start.inc.asm"
 
 %define dataSize  1024
 
 ; ----------------------------------------------------------------------
-section 	.text
-%ifdef WITH_LD
-	global _start
-
-_start:
-%endif
-%ifdef WITH_GCC
-	global main
-
-main:
-%endif
+ENTRY_POINT
 loop:
 	sys_read  STDIN, rchar, dataSize	; read dataSize chars from STDIN
 	cmp rax, 0							; rax contains the number of bytes
