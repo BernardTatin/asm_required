@@ -76,14 +76,22 @@ echo "sources : $sources"
 echo "objects : $objects"
 echo "output  : $output"
 
-nasm -D${link} -f  elf64 -g \
-	-Iinclude \
+cat <<NASM
+nasm -D${link} -f  elf64 -g -Iinclude/ \
+	-l ${entrysrc}.lst ${sources} \
+	|| onerror 2 "nasm failed"
+NASM
+
+nasm -D${link} -f  elf64 -g -Iinclude/ \
 	-l ${entrysrc}.lst ${sources} \
 	|| onerror 2 "nasm failed"
 
 if [ ${link} = 'WITH_LD' ]
 then
-	ld -o ${output} ${objects} \
+	cat <<LD
+	ld -o ${output} ${objects} -Map=${output}.map --xref
+LD
+	ld -o ${output} ${objects} -Map=${output}.map --cref  \
 		|| onerror 3 "ld failed"
 fi
 if [ ${link} = 'WITH_GCC' ]
