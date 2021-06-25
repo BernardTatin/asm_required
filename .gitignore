@@ -4,6 +4,8 @@
 *.lst
 *.map
 *.inc
+
+*.out
 *.trace
 *.trace.*
 

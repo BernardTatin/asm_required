@@ -4,13 +4,14 @@
 ; A simple cat which write on STDOUT all what it reads on STDIN
 ; To assemble and run:
 ;
-;     nasm -felf64 acat.asm && ld hello.o && ./a.out
+;     nasm -felf64 acat.asm acat.data.asm \
+;		&& ld acat.o acat.data.o && ./a.out
 ; ----------------------------------------------------------------------
 
+%define CODE		1
 %include "syscalls.inc.asm"
 %include "start.inc.asm"
-
-%define dataSize  1024
+%include "acat.inc.asm"
 
 ; ----------------------------------------------------------------------
 ENTRY_POINT
@@ -25,24 +26,13 @@ loop:
 	jmp loop							; loop
 cant_write:
 	push rax
-	sys_write STDERR, writeerror, Ewriteerror-writeerror
+	sys_write STDERR, writeerror, [Lwriteerror]
 	pop rax
 	jmp end_loop
 cant_read:
 	push rax
-	sys_write STDERR, readerror, Ereaderror-readerror
+	sys_write STDERR, readerror, [Lreaderror]
 	pop rax
 	jmp end_loop
 end_loop:
 	sys_exit	rax						; exit with last exit code
-
-; ----------------------------------------------------------------------
-section	.data
-readerror	db 'Cannot read STDIN', 10
-Ereaderror	db 0
-
-writeerror	db 'Cannot write STDIN', 10
-Ewriteerror db 0
-; ----------------------------------------------------------------------
-section .bss
-rchar:  resb      dataSize				; the buffer

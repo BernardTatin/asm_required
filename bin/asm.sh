@@ -76,15 +76,26 @@ echo "sources : $sources"
 echo "objects : $objects"
 echo "output  : $output"
 
-cat <<NASM
-nasm -D${link} -f  elf64 -g -Iinclude/ \
-	-l ${entrysrc}.lst ${sources} \
-	|| onerror 2 "nasm failed"
-NASM
+#cat <<NASM
+#nasm -D${link} -f  elf64 -g -Iinclude/ \
+	#-l ${entrysrc}.lst ${sources} \
+	#|| onerror 2 "nasm failed"
+#NASM
 
+for s in ${sources}
+do
+	cat <<NASM
 nasm -D${link} -f  elf64 -g -Iinclude/ \
-	-l ${entrysrc}.lst ${sources} \
-	|| onerror 2 "nasm failed"
+	-l ${s}.lst ${s} \
+	|| onerror 2 "nasm ${s} failed"
+NASM
+nasm -D${link} -f  elf64 -g -Iinclude/ \
+	-l ${s}.lst ${s} \
+	|| onerror 2 "nasm ${s} failed"
+done
+#nasm -D${link} -f  elf64 -g -Iinclude/ \
+	#-l ${entrysrc}.lst ${sources} \
+	#|| onerror 2 "nasm failed"
 
 if [ ${link} = 'WITH_LD' ]
 then
