@@ -11,15 +11,13 @@
 %define dataSize  1024
 
 %ifdef DATA
-	global	readerror
-	global 	Lreaderror
-	global 	writeerror
-	global 	Lwriteerror
-	global 	rchar
+	%define _ATTR_	global
 %else
-	extern	readerror
-	extern 	Lreaderror
-	extern 	writeerror
-	extern 	Lwriteerror
-	extern 	rchar
+	%define _ATTR_	extern
 %endif
+
+_ATTR_	readerror
+_ATTR_ 	Lreaderror
+_ATTR_ 	writeerror
+_ATTR_ 	Lwriteerror
+_ATTR_ 	rchar
