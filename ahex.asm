@@ -42,7 +42,7 @@ end_loop:
 onerror:
 	sys_exit 	rax
 
-	;§g filling the line
+	; filling the line
 fillline:
 	; rdi points on line
 	mov			rdi, line
@@ -64,7 +64,7 @@ fillline:
 
 	mov			rsi, buffer_in
 	mov			rdi, chars
-	mov			rcx, 16
+	mov			rcx, buffer_size
 loopchars:
 	mov			al, [rsi]
 	cmp			al, 020h
@@ -117,7 +117,8 @@ looptohex:
 	ret
 
 loopbytes:
-	mov 		rcx , 8
+	mov 		rcx, buffer_size
+	shr			rcx, 1
 inner_loopbytes:
 	push		rcx
 	mov			rcx, 2
