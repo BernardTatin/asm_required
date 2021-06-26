@@ -56,33 +56,11 @@ fillline:
 	add			r10d, buffer_size
 	mov			[address], r10d
 
-
 	mov			rsi, buffer_in
-	mov			r10, 0
-	mov 		rcx , 8
 	mov			rdi, bytes1
-
-loopbytes1:
-	push		rcx
-	mov			rcx, 2
-	mov			r10b, [rsi]
-	call		tohex
-	inc			rsi
-	add			rdi, 3
-	pop			rcx
-	loop		loopbytes1
-
-	mov 		rcx , 8
+	call		loopbytes
 	mov			rdi, bytes2
-loopbytes2:
-	push		rcx
-	mov			rcx, 2
-	mov			r10b, [rsi]
-	call		tohex
-	inc			rsi
-	add			rdi, 3
-	pop			rcx
-	loop		loopbytes2
+	call		loopbytes
 
 	mov			rsi, buffer_in
 	mov			rdi, chars
@@ -136,5 +114,18 @@ looptohex:
 	pop			rdi
 	pop			rsi
 	; return to caller
+	ret
+
+loopbytes:
+	mov 		rcx , 8
+inner_loopbytes:
+	push		rcx
+	mov			rcx, 2
+	mov			r10b, [rsi]
+	call		tohex
+	inc			rsi
+	add			rdi, 3
+	pop			rcx
+	loop		inner_loopbytes
 	ret
 
