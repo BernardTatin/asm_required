@@ -8,6 +8,8 @@
 *.out
 *.trace
 *.trace.*
+*.tmp
 
 acat
+ahex
 cpuid
