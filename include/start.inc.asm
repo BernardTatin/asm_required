@@ -8,12 +8,12 @@
 
 %macro ENTRY_POINT 0
 section 	.text
-%ifdef WITH_LD
+%ifdef WITH_ld
 	global _start
 
 _start:
 %endif
-%ifdef WITH_GCC
+%ifdef WITH_gcc
 	global main
 
 main:

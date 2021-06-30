@@ -51,8 +51,10 @@ fillline:
 	; call		reset_bytes_1_2
 	; mov			rdi, bytes2
 	; call		reset_bytes_1_2
-	; call		reset_chars
+	call		reset_chars
 	; pop			r14
+
+	ret
 
 	; rdi points on line
 	mov			rdi, line
@@ -172,9 +174,11 @@ rep	stosb
 
 ; -----------------------------------------------
 reset_chars:
+	push		rdi
 	mov			rdi, chars
 	mov			cx, buffer_size
 	mov			al, ' '
 	cld
 rep	stosb
+	pop			rdi
 	ret
