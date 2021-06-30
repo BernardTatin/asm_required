@@ -29,6 +29,9 @@ chars			db		'................'
 				db		'|', 10
 Lline			dq		$-line
 
+emptybytes		db		'xy xy xy xy xy xy xy xy'
+Lemptybytes		dq		$-emptybytes
+
 hexsymbols		db		'0123456789abcdef'
 ; ----------------------------------------------------------------------
 section .bss

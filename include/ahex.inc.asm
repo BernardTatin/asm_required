@@ -29,5 +29,8 @@ _ATTR_ bytes2
 _ATTR_ chars
 _ATTR_ Lline
 
+_ATTR_ emptybytes
+_ATTR_ Lemptybytes
+
 _ATTR_ hexsymbols
 
