@@ -51,7 +51,7 @@ fillline:
 	; call		reset_bytes_1_2
 	; mov			rdi, bytes2
 	; call		reset_bytes_1_2
-	call		reset_chars
+	; call		reset_chars
 	; pop			r14
 
 	; rdi points on line
@@ -65,7 +65,6 @@ fillline:
 	pop			r10
 	add			r10d, buffer_size
 	mov			[address], r10d
-	ret
 
 	push		r14
 	mov			rsi, buffer_in
